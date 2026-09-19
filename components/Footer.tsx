@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { FOOTER_QUERY } from "@/sanity/lib/queries";
+import { LegalLinks } from "@/components/LegalModal";
 
 export interface CombinedFooterData {
   navbar: {
@@ -51,7 +52,7 @@ export async function Footer() {
               {navbar.title}
             </span>
             <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-sm">
-              {navbar.subtitle} alanında bireysel ve online psikolojik danışmanlık. Yüz yüze Ankara, online Türkiye geneli.
+              {navbar.subtitle} alanında bireysel ve online psikolojik danışmanlık. Yüz yüze Samsun, online Türkiye geneli.
             </p>
             <div className="pt-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-brand-primary">
@@ -162,16 +163,7 @@ export async function Footer() {
         {/* Alt Telif & Yasal Haklar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
           <p>© 2026 {navbar.title} · Tüm hakları saklıdır.</p>
-          
-          <div className="flex items-center gap-4">
-            <Link href="#gizlilik" className="hover:text-stone-200 transition-colors">
-              Gizlilik Politikası
-            </Link>
-            <span>·</span>
-            <Link href="#kvkk" className="hover:text-stone-200 transition-colors">
-              KVKK Aydınlatma Metni
-            </Link>
-          </div>
+          <LegalLinks />
         </div>
 
       </div>

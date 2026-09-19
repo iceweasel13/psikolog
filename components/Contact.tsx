@@ -9,6 +9,7 @@ import {
 import { client } from "@/sanity/lib/client";
 import { CONTACT_QUERY } from "@/sanity/lib/queries";
 import { ContactForm } from "@/components/ContactForm";
+import { MotionItem } from "@/components/ui/motion-item";
 
 export interface ContactData {
   tagline: string;
@@ -27,6 +28,9 @@ export interface ContactData {
   kvkkText: string;
 }
 
+/**
+ * İletişim kanallarının ve randevu başvuru formunun yer aldığı ana bölüm.
+ */
 export async function Contact() {
   const contact = await client.fetch<ContactData>(
     CONTACT_QUERY,
@@ -39,27 +43,22 @@ export async function Contact() {
       id="randevu"
       className="relative bg-brand-primary text-brand-heading py-20 sm:py-28 overflow-hidden border-t border-brand-border/60"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* 1. ÜST KISIM: ORTALANMIŞ BAŞLIK VE AÇIKLAMA */}
-        <div className="max-w-3xl mx-auto text-center mb-16 sm:mb-20">
-          <span className="text-xs font-mono uppercase tracking-widest text-brand-heading/70 block mb-2">
+      <div className="section-container">
+        <MotionItem className="section-header mx-auto text-center">
+          <span className="clinical-tagline">
             {contact.tagline}
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-heading tracking-tight mb-4">
+          <h2 className="clinical-heading">
             {contact.heading}
           </h2>
-          <p className="text-brand-body text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+          <p className="clinical-body max-w-2xl mx-auto">
             {contact.description}
           </p>
-        </div>
+        </MotionItem>
 
-        {/* 2. ALT KISIM: SOLDA BİLGİLER, SAĞDA FORM */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-          
-          {/* Sol Kolon: İletişim Kanalları ve KVKK */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-brand-border/70 backdrop-blur-xs hover:bg-white transition-colors">
+          <MotionItem delay={0.1} className="lg:col-span-5 space-y-4">
+            <div className="info-tile">
               <MapPin className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-brand-heading">{contact.locationTitle}</p>
@@ -67,7 +66,7 @@ export async function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-brand-border/70 backdrop-blur-xs hover:bg-white transition-colors">
+            <div className="info-tile">
               <Laptop className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-brand-heading">{contact.onlineTitle}</p>
@@ -75,7 +74,7 @@ export async function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-brand-border/70 backdrop-blur-xs hover:bg-white transition-colors">
+            <div className="info-tile">
               <MessageCircle className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-brand-heading">WhatsApp Hattı</p>
@@ -90,7 +89,7 @@ export async function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-brand-border/70 backdrop-blur-xs hover:bg-white transition-colors">
+            <div className="info-tile">
               <Phone className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-brand-heading">Telefon</p>
@@ -100,7 +99,7 @@ export async function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-brand-border/70 backdrop-blur-xs hover:bg-white transition-colors">
+            <div className="info-tile">
               <Phone className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-brand-heading">Instagram</p>
@@ -115,7 +114,7 @@ export async function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-brand-border/70 backdrop-blur-xs hover:bg-white transition-colors">
+            <div className="info-tile">
               <Mail className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-brand-heading">E-posta</p>
@@ -128,18 +127,17 @@ export async function Contact() {
               </div>
             </div>
 
-            {/* KVKK Bilgilendirme */}
             <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/50 border border-brand-border text-xs text-brand-body mt-6">
               <Lock className="w-4 h-4 text-brand-heading shrink-0 mt-0.5" />
               <p className="leading-relaxed">
                 {contact.kvkkText}
               </p>
             </div>
-          </div>
+          </MotionItem>
 
-          {/* Sağ Kolon: Form */}
-          <ContactForm />
-
+          <MotionItem delay={0.2} className="lg:col-span-7">
+            <ContactForm />
+          </MotionItem>
         </div>
       </div>
     </section>

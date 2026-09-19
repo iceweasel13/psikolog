@@ -89,7 +89,8 @@ export const EDUCATION_QUERY = `
       title,
       institution,
       desc,
-      side
+      side,
+      certificateImage
     },
     skillsTagline,
     skillsHeading,

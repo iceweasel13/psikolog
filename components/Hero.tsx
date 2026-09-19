@@ -4,7 +4,8 @@ import { InteractiveSynapse } from "@/components/InteractiveSynapse";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { HERO_QUERY } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
+import { urlFor, type SanityImageSource } from "@/sanity/lib/image";
+import { MotionItem } from "@/components/ui/motion-item";
 
 export interface HeroData {
   badgeText: string;
@@ -17,11 +18,14 @@ export interface HeroData {
   ctaSecondaryText: string;
   ctaSecondaryLink: string;
   stats: { title: string; subtitle: string }[];
-  portraitImage?: any;
+  portraitImage?: SanityImageSource;
   trustBadgeTitle: string;
   trustBadgeSubtitle: string;
 }
 
+/**
+ * Karşılama, hekim unvanı, öne çıkan istatistikler ve görseli barındıran Hero bölümü.
+ */
 export async function Hero() {
   const heroData = await client.fetch<HeroData>(
     HERO_QUERY,
@@ -31,23 +35,18 @@ export async function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden bg-brand-bg pt-8 pb-20 lg:py-24">
-      {/* 1. Arka Plan Sinaps Ağı */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-75">
         <InteractiveSynapse />
       </div>
 
-      {/* 2. Aurora Glow */}
       <div className="pointer-events-none absolute -top-24 left-1/4 w-[600px] sm:w-[850px] h-[550px] opacity-40 blur-[130px] -z-0">
         <div className="w-full h-full bg-gradient-to-br from-brand-primary via-amber-100/50 to-stone-200 rounded-full" />
       </div>
 
-      {/* 3. İçerik Katmanı */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 section-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
-          {/* Sol Kolon */}
-          <div className="lg:col-span-7 space-y-7 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary/60 border border-brand-border text-brand-heading text-xs font-medium tracking-wide backdrop-blur-xs">
+          <MotionItem delay={0.05} className="lg:col-span-7 space-y-7 text-left">
+            <div className="badge-pill">
               <Sparkles className="w-3.5 h-3.5 text-brand-hover" />
               <span>{heroData.badgeText}</span>
             </div>
@@ -73,14 +72,14 @@ export async function Hero() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
               <Link
                 href={heroData.ctaPrimaryLink}
-                className="inline-flex justify-center items-center gap-2 px-7 py-4 rounded-2xl bg-brand-heading text-brand-bg font-medium text-sm hover:bg-brand-heading/90 transition-all shadow-sm group cursor-pointer"
+                className="btn-primary group cursor-pointer"
               >
                 <span>{heroData.ctaPrimaryText}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href={heroData.ctaSecondaryLink}
-                className="inline-flex justify-center items-center px-7 py-4 rounded-2xl border border-brand-border bg-white/90 text-brand-heading font-medium text-sm hover:bg-brand-primary/50 transition-colors"
+                className="btn-secondary"
               >
                 {heroData.ctaSecondaryText}
               </Link>
@@ -94,12 +93,10 @@ export async function Hero() {
                 </div>
               ))}
             </div>
-          </div>
+          </MotionItem>
 
-          {/* Sağ Kolon */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
+          <MotionItem delay={0.2} className="lg:col-span-5 relative flex items-center justify-center">
             <div className="relative w-full max-w-[420px] aspect-[3/4] rounded-3xl overflow-hidden bg-brand-primary/30 border border-brand-border shadow-xl backdrop-blur-xs">
-              
               {heroData.portraitImage ? (
                 <Image
                   src={urlFor(heroData.portraitImage).width(800).height(1066).quality(90).url()}
@@ -115,11 +112,8 @@ export async function Hero() {
                   <span>[Fotoğraf Studio&apos;dan Bekleniyor]</span>
                 </div>
               )}
-
-
             </div>
-          </div>
-
+          </MotionItem>
         </div>
       </div>
     </section>

@@ -60,19 +60,19 @@ export const contactType = defineType({
       name: "whatsappDisplay",
       title: "WhatsApp Görünen Metin",
       type: "string",
-      initialValue: "+90 531 653 45 61 · Hızlı mesaj gönderin",
+      initialValue: "+90 546 853 74 69 · Hızlı mesaj gönderin",
     }),
     defineField({
       name: "phoneRaw",
       title: "Telefon Arama Numarası (tel: için)",
       type: "string",
-      initialValue: "08508119321",
+      initialValue: "+90 546 853 74 69",
     }),
     defineField({
       name: "phoneDisplay",
       title: "Telefon Görünen Metin",
       type: "string",
-      initialValue: "0850 811 93 21 · Randevu ve danışma",
+      initialValue: "+90 546 853 74 69 · Randevu ve danışma",
     }),
     defineField({
       name: "instagramHandle",

@@ -37,7 +37,6 @@ export const educationType = defineType({
               name: "badge",
               title: "Etiket / Tür",
               type: "string",
-              description: "Örn: Akademik Eğitim, Sertifika, Klinik Staj",
               validation: (Rule) => Rule.required(),
             }),
             defineField({
@@ -58,6 +57,15 @@ export const educationType = defineType({
               type: "text",
               rows: 3,
               validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "certificateImage",
+              title: "Sertifika / Belge Görseli (İsteğe Bağlı)",
+              type: "image",
+              description: "Yüklendiğinde kartta 'Belgeyi Görüntüle' butonu açılır.",
+              options: {
+                hotspot: true,
+              },
             }),
             defineField({
               name: "side",

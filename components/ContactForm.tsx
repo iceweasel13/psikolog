@@ -68,15 +68,14 @@ export function ContactForm() {
 
       setIsSubmitted(true);
       form.reset();
-    } catch (error) {
-      console.error("Form iletim hatası:", error);
+    } catch {
       alert("Mesaj iletilirken bir sorun oluştu. Lütfen doğrudan telefon veya WhatsApp ile iletişime geçin.");
     } finally {
       setLoading(false);
     }
   };
   return (
-    <div className="lg:col-span-7 bg-white/95 backdrop-blur-md p-6 sm:p-10 rounded-3xl border border-brand-border shadow-sm">
+    <div className="w-full bg-white/95 backdrop-blur-md p-6 sm:p-10 rounded-3xl border border-brand-border shadow-sm">
       <h3 className="text-2xl font-serif font-bold text-brand-heading mb-6">
         Randevu Formu
       </h3>
