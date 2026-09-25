@@ -61,7 +61,7 @@ export function MobileNav({
 
           {/* Menü Linkleri: SheetClose ile tıklandığı an çekmece kendiliğinden kapanır */}
           <nav className="flex flex-col gap-2 pt-6">
-            {links.map((link) => (
+            {links?.map((link) => (
               <SheetClose
                 key={link.href}
                 render={

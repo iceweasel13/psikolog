@@ -70,7 +70,7 @@ export async function Education() {
           <div className="absolute top-4 bottom-4 left-4 lg:left-1/2 w-px -translate-x-1/2 bg-brand-border lg:border-l lg:border-dashed lg:border-brand-hover/70" />
 
           <div className="space-y-8 sm:space-y-12">
-            {education.timeline.map((item, index) => {
+            {education.timeline?.map((item, index) => {
               const isLeft = item.side === "left";
 
               return (
@@ -146,7 +146,7 @@ export async function Education() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 justify-center md:justify-end shrink-0">
-            {education.technicalSkills.map((tool) => (
+            {education.technicalSkills?.map((tool) => (
               <span
                 key={tool}
                 className="rounded-xl border border-brand-border bg-brand-bg px-3.5 py-1.5 text-xs font-semibold text-brand-heading"

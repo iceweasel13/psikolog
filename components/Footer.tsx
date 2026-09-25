@@ -68,7 +68,7 @@ export async function Footer() {
               Hizmetler
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
-              {services.items.map((service, idx) => (
+              {services.items?.map((service, idx) => (
                 <li key={idx}>
                   <Link href="#hizmetler" className="hover:text-white transition-colors">
                     {service.title}
@@ -84,7 +84,7 @@ export async function Footer() {
               Bilgi
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
-              {navbar.navItems.map((item, idx) => (
+              {navbar.navItems?.map((item, idx) => (
                 <li key={idx}>
                   <Link href={item.href} className="hover:text-white transition-colors">
                     {item.label}

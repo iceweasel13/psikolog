@@ -51,7 +51,7 @@ export default async function Navbar() {
         </Link>
 
         <nav className="hidden md:flex items-center md:gap-5 lg:gap-8 xl:gap-9 text-sm lg:text-[18px] font-medium text-brand-heading/90">
-          {navLinks.map((link) => (
+          {navLinks?.map((link) => (
             <Link
               key={link.href}
               href={link.href}

@@ -73,7 +73,7 @@ export async function AboutMe() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-              {aboutData.highlightCards.map((card, idx) => (
+              {aboutData.highlightCards?.map((card, idx) => (
                 <div key={idx} className="bg-brand-bg p-6 rounded-2xl border border-brand-border/60">
                   <span className="text-2xl font-serif font-bold text-brand-heading block mb-1">
                     {card.badge}

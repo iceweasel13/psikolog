@@ -86,7 +86,7 @@ export async function Hero() {
             </div>
 
             <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-brand-border/70">
-              {heroData.stats.map((stat, idx) => (
+              {heroData.stats?.map((stat, idx) => (
                 <div key={idx} className="p-3 sm:p-4 rounded-2xl bg-white/75 backdrop-blur-xs border border-brand-border/60">
                   <p className="text-xs sm:text-sm font-bold text-brand-heading">{stat.title}</p>
                   <p className="text-[11px] text-brand-muted mt-0.5">{stat.subtitle}</p>

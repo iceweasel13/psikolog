@@ -72,13 +72,13 @@ export async function Reviews() {
         <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-brand-primary to-transparent z-10" />
 
         <div className="flex gap-6 w-max animate-marquee-left hover:[animation-play-state:paused]">
-          {[...reviews.rowOne, ...reviews.rowOne].map((item, idx) => (
+          {[...reviews.rowOne, ...reviews.rowOne]?.map((item, idx) => (
             <ReviewCard key={`row1-${idx}`} text={item.text} category={item.category} />
           ))}
         </div>
 
         <div className="flex gap-6 w-max animate-marquee-right hover:[animation-play-state:paused]">
-          {[...reviews.rowTwo, ...reviews.rowTwo].map((item, idx) => (
+          {[...reviews.rowTwo, ...reviews.rowTwo]?.map((item, idx) => (
             <ReviewCard key={`row2-${idx}`} text={item.text} category={item.category} />
           ))}
         </div>
