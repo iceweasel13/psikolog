@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
+import { HOME_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akintemiz.com";
-
   return [
     {
-      url: baseUrl,
+      url: HOME_URL,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1.0,

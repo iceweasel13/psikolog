@@ -9,7 +9,7 @@ export const heroType = defineType({
       name: "badgeText",
       title: "Üst Rozet Metni",
       type: "string",
-      initialValue: "Psikolog · Samsun & Online",
+      initialValue: "Klinik Psikolog · Online",
     }),
     defineField({
       name: "titleMain",
@@ -39,7 +39,7 @@ export const heroType = defineType({
       type: "text",
       rows: 4,
       initialValue:
-        "Bilkent Üniversitesi Psikoloji bölümünden Onur Öğrencisi olarak mezun oldum. Bilişsel Davranışçı Terapi temelinde, bilimsel ve kişiye özel bir süreç yürütüyoruz — yüz yüze Samsun'da, online Türkiye'nin her yerinden. İlk adımı atmak çoğu zaman en zor kısımdır; bu yüzden ilk tanışma görüşmemiz ücretsiz.",
+        "Bilişsel Davranışçı Terapi temelinde, bilimsel ve kişiye özel bir online süreç yürütüyoruz. İlk adımı atmak çoğu zaman en zor kısımdır; bu yüzden ilk tanışma görüşmemiz ücretsiz.",
     }),
     defineField({
       name: "ctaPrimaryText",
@@ -79,7 +79,7 @@ export const heroType = defineType({
         },
       ],
       initialValue: [
-        { title: "Yüz yüze & Online", subtitle: "Çalışma Biçimi" },
+        { title: "Online", subtitle: "Çalışma Biçimi" },
         { title: "BDT Temelli", subtitle: "Klinik Yaklaşım" },
         { title: "Bilkent Psikoloji", subtitle: "Onur Öğrencisi" },
       ],

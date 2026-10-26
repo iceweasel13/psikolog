@@ -1,5 +1,4 @@
 import {
-  MapPin,
   MessageCircle,
   Phone,
   Mail,
@@ -25,7 +24,6 @@ export interface CombinedFooterData {
     items: { title: string }[];
   };
   contact: {
-    locationDetails: string;
     whatsappNumber: string;
     whatsappDisplay: string;
     phoneRaw: string;
@@ -107,10 +105,6 @@ export async function Footer() {
               İletişim
             </h4>
             <ul className="space-y-2.5 text-xs sm:text-sm">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" />
-                <span>{contact.locationDetails}</span>
-              </li>
               <li>
                 <a
                   href={`https://wa.me/${whatsappNumber}`}

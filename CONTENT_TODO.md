@@ -1,70 +1,41 @@
-# Doğrulanması Gereken İçerikler
+# Production Kontrol Listesi
 
-Bu dosyadaki değerler **örnektir**; üretim verisi olarak kullanılmamalıdır. Projede hâlihazırda doğrulanabilir şekilde bulunan ad, unvan, şehir, telefon, WhatsApp, Instagram, e-posta, çalışma alanları ve seans biçimleri korunmuştur.
+Site içeriği ve teknik yapı 26 Ekim 2026 tarihinde aşağıdaki doğrulanmış bilgilerle güncellenmiştir.
 
-## Yerel SEO ve kurum bilgileri
+## Tamamlananlar
 
-```text
-CLINIC_DISTRICT = "[İlçe]"
-CLINIC_FULL_ADDRESS = "[Mahalle, cadde/sokak, bina ve ilçe bilgisi]"
-GOOGLE_BUSINESS_PROFILE_URL = "https://g.page/r/[profil-kodu]"
-BUSINESS_OPENING_HOURS = "[Doğrulanmış gün ve saatler]"
-```
+- [x] Google Search Console'daki `sitemap.xml` sorunu çözüldü. Çalışan sitemap yapılandırması bu güncellemede değiştirilmedi.
+- [x] Canonical domain `https://www.akintemiz.com` olarak ayarlandı.
+- [x] Google Search Console mülkü kullanıcı tarafından `sc-domain.com` olarak bildirildi. Mevcut doğrulama yöntemine ve çalışan Search Console yapılandırmasına dokunulmadı.
+- [x] Hizmet bilgileri “Klinik Psikolog Akın Temiz” ve yalnızca “Online seans” olarak güncellendi. Fiziksel klinik, harita ve Google Business Profile bilgisi kullanılmıyor.
+- [x] Pazartesi–Cumartesi `09.00–18.00`, Pazar `Kapalı` çalışma saatleri Sanity Studio üzerinden yönetilecek şekilde iletişim alanına eklendi.
+- [x] Sanity Studio'daki mevcut dört eğitim kaydı korundu. Yıl, kategori ve sertifika bağlantısı alanları boşken arayüz çalışır; doğrulanmamış bilgi eklenmedi.
+- [x] Randevu formu başarı olayı ile telefon, WhatsApp ve Instagram tıklamaları kişisel veri içermeyen Umami event'leri olarak tanımlandı.
+- [x] Umami, analitik tercihi kabul edilmeden yüklenmez. Ret ve tercih değiştirme akışı aktiftir.
+- [x] KVKK Aydınlatma Metni, Gizlilik Politikası ve Çerez Politikası gerçek Resend, Sanity ve Umami akışlarına göre taslak olarak güncellendi.
 
-Bu bilgiler doğrulanmadan `LocalBusiness`, tam `PostalAddress`, koordinat veya çalışma saatleri structured data alanlarına eklenmemelidir.
-
-## Eğitim ve sertifika kartları
-
-Her mevcut/yeni kayıt için uygun olan alanlar Sanity Studio'da doldurulabilir:
-
-```text
-EDUCATION_COMPLETION_YEAR = "[YYYY]"
-EDUCATION_CATEGORY = "[Lisans / Yüksek Lisans / Psikoterapi Eğitimi / Sertifika]"
-CERTIFICATE_URL = "https://[doğrulanabilir-belge-bağlantısı]"
-```
-
-Yıl bilgisi girilen kayıtlar sitede tarihe göre sıralanabilir. Mevcut dört eğitim kaydına doğrulanmamış yıl eklenmemiştir.
-
-## Yayın öncesi teyit
+## Eksik environment variable
 
 ```text
-CANONICAL_DOMAIN = "https://akintemiz.com"
-GOOGLE_SEARCH_CONSOLE_PROPERTY = "[Doğrulanmış Search Console mülkü]"
-GOOGLE_SITE_VERIFICATION = "[Google Search Console HTML etiketi doğrulama kodu]"
+NEXT_PUBLIC_UMAMI_WEBSITE_ID = "[Umami Cloud hesabındaki gerçek Website ID]"
 ```
 
-Canonical domain mevcut proje yapılandırmasından alınmıştır; production alan adı farklıysa `NEXT_PUBLIC_SITE_URL` ile güncellenmelidir.
+`NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js` hazırdır. Website ID tanımlanana kadar Umami scripti yüklenmez ve gereksiz analitik onay banner'ı gösterilmez.
 
-## Umami Analytics Cloud
+## Nihai hukuki kontrol listesi
 
-Umami scripti bu bilgiler tanımlanana kadar yüklenmez ve analitik onay banner'ı gösterilmez:
-
-```text
-NEXT_PUBLIC_UMAMI_WEBSITE_ID = "[Umami Cloud Website ID]"
-NEXT_PUBLIC_UMAMI_SCRIPT_URL = "https://cloud.umami.is/script.js"
-UMAMI_DATA_REGION = "[EU veya US — hesap ayarından doğrulayın]"
-```
-
-Yayın öncesinde ayrıca:
-
-- Umami Cloud hesabında mümkünse `EU` veri bölgesinin seçildiğini doğrulayın.
-- Umami Data Processing Agreement ve güncel alt işleyen listesini saklayın.
-- KVKK'nın 9. maddesi kapsamında uygulanacak yurt dışı aktarım mekanizmasını hukuk uzmanıyla belirleyin.
-- Standart sözleşme kullanılacaksa doğru sözleşme tipi, imza ve Kuruma beş iş günü içinde bildirim gerekliliğini kontrol edin.
-- Hobby planının güncel veri saklama süresini ve hesap bölgesini Umami panelinden teyit edin.
-
-## Hukuki ve kurumsal bilgiler
-
-Nihai Gizlilik/KVKK metinleri için aşağıdaki bilgiler hukuk uzmanı tarafından tamamlanmalıdır:
+Aşağıdaki bilgiler teknik yayını engellemez; metinlerin nihai hukuk incelemesinde somut hizmet ve sağlayıcı sözleşmelerine göre tamamlanmalıdır:
 
 ```text
 DATA_CONTROLLER_NOTIFICATION_ADDRESS = "[Tebligata elverişli açık adres]"
-DATA_RETENTION_PERIODS = "[Her veri kategorisi için doğrulanmış süre]"
-DELETION_AND_DESTRUCTION_PROCESS = "[Silme/yok etme yöntemi ve periyodu]"
-KVKK_APPLICATION_METHOD = "[Başvuru kanalı ve kimlik doğrulama yöntemi]"
-INTERNATIONAL_TRANSFER_SAFEGUARD = "[Yeterlilik kararı / standart sözleşme / diğer uygun güvence]"
-RESEND_DATA_REGION_AND_DPA = "[Sözleşme ve aktarım incelemesi sonucu]"
-SANITY_DATA_REGION_AND_DPA = "[Sözleşme ve aktarım incelemesi sonucu]"
+DATA_RETENTION_PERIODS = "[Her veri kategorisi için doğrulanmış saklama süresi]"
+DELETION_AND_DESTRUCTION_PROCESS = "[Silme, yok etme ve periyodik imha yöntemi]"
+KVKK_APPLICATION_METHOD = "[Başvuru kanalı, usulü ve kimlik doğrulama yöntemi]"
+FORM_DATA_LEGAL_BASIS = "[Her veri kategorisi için uygulanacak KVKK hukuki sebebi]"
+INTERNATIONAL_TRANSFER_SAFEGUARD = "[KVKK m.9 kapsamındaki uygun güvence veya diğer mekanizma]"
+RESEND_DPA_AND_SUBPROCESSORS = "[Hesap/sözleşme ve güncel alt işleyen incelemesi]"
+SANITY_DPA_AND_SUBPROCESSORS = "[Hesap/sözleşme ve güncel alt işleyen incelemesi]"
+UMAMI_ACCOUNT_REGION_AND_DPA = "[Hesap bölgesi, sözleşme ve alt işleyen incelemesi]"
 ```
 
-Siteye eklenen metinler teknik işleyişi açıklar; nihai hukuki görüş veya mevzuata uyum garantisi değildir.
+Sitedeki metinler teknik veri akışlarını açıklayan taslaklardır; hukuki görüş veya mevzuata uyum garantisi değildir.

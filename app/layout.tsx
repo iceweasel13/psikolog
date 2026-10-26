@@ -3,6 +3,13 @@ import { Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PrivacyConsent } from "@/components/PrivacyConsent";
+import {
+  HOME_URL,
+  OG_IMAGE_URL,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -11,61 +18,58 @@ const playfair = Playfair_Display({
   variable: "--font-serif",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akintemiz.com";
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   title: {
-    default: "Klinik Psikolog Akın Temiz",
-    template: "%s | Klinik Psikolog Akın Temiz",
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Klinik Psikolog Akın Temiz hakkında bilgi edinin. Eğitim geçmişini, çalışma alanlarını ve Samsun'da yüz yüze veya online psikoterapi sürecine ilişkin bilgileri inceleyin.",
+  description: SITE_DESCRIPTION,
   keywords: [
-    "Klinik Psikolog Akın Temiz",
+    SITE_NAME,
     "Akın Temiz",
-    "Samsun Psikolog",
-    "Samsun Klinik Psikolog",
     "Online Terapi",
     "Bilişsel Davranışçı Terapi",
-    "BDT Samsun",
     "Bireysel Terapi",
     "Ergen Terapisi",
-    "Cinsel Terapi",
-    "Çift Terapisi",
-    "Oyun Terapisi",
-    "Samsun Psikolojik Danışmanlık",
+    "EMDR Terapisi",
   ],
-  authors: [{ name: "Klinik Psikolog Akın Temiz", url: siteUrl }],
-  creator: "Klinik Psikolog Akın Temiz",
-  publisher: "Klinik Psikolog Akın Temiz",
+  authors: [{ name: SITE_NAME, url: HOME_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   alternates: {
-    canonical: siteUrl,
+    canonical: HOME_URL,
   },
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    url: siteUrl,
-    siteName: "Klinik Psikolog Akın Temiz",
-    title: "Klinik Psikolog Akın Temiz",
-    description:
-      "Akın Temiz'in eğitim geçmişini, çalışma alanlarını ve Samsun'da yüz yüze veya online psikoterapi sürecine ilişkin bilgileri inceleyin.",
+    url: HOME_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/opengraph-image",
+        url: OG_IMAGE_URL,
         width: 1200,
         height: 630,
-        alt: "Klinik Psikolog Akın Temiz",
+        type: "image/png",
+        alt: `${SITE_NAME} sosyal paylaşım görseli`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Klinik Psikolog Akın Temiz",
-    description:
-      "Akın Temiz'in eğitim geçmişini, çalışma alanlarını ve psikoterapi sürecine ilişkin bilgileri inceleyin.",
-    images: ["/opengraph-image"],
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: OG_IMAGE_URL,
+        alt: `${SITE_NAME} sosyal paylaşım görseli`,
+      },
+    ],
   },
   icons: {
     icon: [

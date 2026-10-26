@@ -26,18 +26,6 @@ export const contactType = defineType({
         "İlk tanışma görüşmesi ücretsizdir (20 dk). Size en uygun gün ve seans formatını birlikte belirleyelim.",
     }),
     defineField({
-      name: "locationTitle",
-      title: "Yüz yüze Seans Başlığı",
-      type: "string",
-      initialValue: "Yüz yüze Seanslar",
-    }),
-    defineField({
-      name: "locationDetails",
-      title: "Yüz yüze Seans Detayı",
-      type: "string",
-      initialValue: "Klinik & Danışmanlık Merkezi · Samsun",
-    }),
-    defineField({
       name: "onlineTitle",
       title: "Online Seans Başlığı",
       type: "string",
@@ -48,6 +36,38 @@ export const contactType = defineType({
       title: "Online Seans Detayı",
       type: "string",
       initialValue: "Doktortakvimi.com · Google Meet · Zoom",
+    }),
+    defineField({
+      name: "workingHoursTitle",
+      title: "Çalışma Saatleri Başlığı",
+      type: "string",
+      initialValue: "Çalışma Saatleri",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "workingHours",
+      title: "Çalışma Saatleri",
+      type: "array",
+      validation: (rule) => rule.required().min(1),
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({ name: "day", title: "Gün", type: "string", validation: (rule) => rule.required() }),
+            defineField({ name: "hours", title: "Saat", type: "string", validation: (rule) => rule.required() }),
+          ],
+          preview: { select: { title: "day", subtitle: "hours" } },
+        },
+      ],
+      initialValue: [
+        { _key: "monday", day: "Pazartesi", hours: "09.00–18.00" },
+        { _key: "tuesday", day: "Salı", hours: "09.00–18.00" },
+        { _key: "wednesday", day: "Çarşamba", hours: "09.00–18.00" },
+        { _key: "thursday", day: "Perşembe", hours: "09.00–18.00" },
+        { _key: "friday", day: "Cuma", hours: "09.00–18.00" },
+        { _key: "saturday", day: "Cumartesi", hours: "09.00–18.00" },
+        { _key: "sunday", day: "Pazar", hours: "Kapalı" },
+      ],
     }),
     defineField({
       name: "whatsappNumber",
@@ -92,7 +112,7 @@ export const contactType = defineType({
       type: "text",
       rows: 2,
       initialValue:
-        "Tüm görüşmeler mesleki etik ilkeleri ve 6698 sayılı KVKK kapsamında gizlilik güvencesi altında yürütülmektedir.",
+        "Randevu formunda yalnızca geri dönüş için gerekli bilgileri paylaşın; ayrıntılı sağlık bilgisi yazmayın. Veri işleme ayrıntıları KVKK Aydınlatma Metni'nde açıklanır.",
     }),
   ],
 });

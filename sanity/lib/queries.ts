@@ -110,7 +110,13 @@ export const CONTACT_QUERY = `
       phoneDisplay,
       instagramHandle,
       email,
-      kvkkText
+      kvkkText,
+      workingHoursTitle,
+      workingHours[] {
+        _key,
+        day,
+        hours
+      }
     },
     "services": *[_type == "services"][0].items[] {
       _key,
@@ -151,7 +157,6 @@ export const FOOTER_QUERY = `
       }
     },
     "contact": *[_type == "contact"][0] {
-      locationDetails,
       whatsappNumber,
       whatsappDisplay,
       phoneRaw,

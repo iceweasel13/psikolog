@@ -1,40 +1,38 @@
 import Navbar from "@/components/Navbar/Navbar";
 import { Footer } from "@/components/Footer";
 import { FloatingContact } from "@/components/FloatingContact";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akintemiz.com";
+import { HOME_URL, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": `${siteUrl}/#website`,
-      name: "Klinik Psikolog Akın Temiz",
-      url: siteUrl,
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: HOME_URL,
       inLanguage: "tr-TR",
-      publisher: { "@id": `${siteUrl}/#person` }
+      publisher: { "@id": `${SITE_URL}/#person` }
     },
     {
       "@type": "WebPage",
-      "@id": `${siteUrl}/#webpage`,
-      url: siteUrl,
-      name: "Klinik Psikolog Akın Temiz",
-      description: "Akın Temiz'in eğitim geçmişi, çalışma alanları ve psikoterapi süreci hakkında bilgi.",
-      isPartOf: { "@id": `${siteUrl}/#website` },
-      about: { "@id": `${siteUrl}/#person` },
+      "@id": `${SITE_URL}/#webpage`,
+      url: HOME_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      about: { "@id": `${SITE_URL}/#person` },
       inLanguage: "tr-TR"
     },
     {
       "@type": "Person",
-      "@id": `${siteUrl}/#person`,
+      "@id": `${SITE_URL}/#person`,
       name: "Akın Temiz",
       jobTitle: "Klinik Psikolog",
       telephone: "+905468537469",
       email: "pskakintemiz@gmail.com",
-      url: siteUrl,
+      url: HOME_URL,
       sameAs: ["https://www.instagram.com/psikologakintemiz/"],
-      homeLocation: { "@type": "Place", name: "Samsun, Türkiye" }
     }
   ]
 };

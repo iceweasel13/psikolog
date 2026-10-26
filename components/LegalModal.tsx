@@ -144,7 +144,7 @@ function PrivacyPolicy() {
         <p>Form verileri yalnızca randevu talebinin değerlendirilmesi, iletişim kurulması ve görüşme planlaması amaçlarıyla kullanılır. Ayrıntılı sağlık bilgisinin serbest metin alanına yazılmaması önerilir.</p>
       </Section>
       <Section title="Hizmet sağlayıcılar">
-        <p>Form iletimi sunucu tarafında e-posta hizmeti Resend üzerinden gerçekleştirilir. Site içerikleri ve görselleri Sanity altyapısından sunulabilir. Umami Cloud analitiği yalnızca açık analitik tercihi sonrasında çalışır ve form içeriğine erişmez.</p>
+        <p>Form iletimi sunucu tarafında e-posta hizmeti Resend üzerinden gerçekleştirilir. Sanity yalnızca sitede yayımlanan editoryal içerik ve görseller için kullanılır; randevu formu Sanity&apos;ye kaydedilmez. Umami Cloud analitiği yalnızca analitik tercihi kabul edildiğinde çalışır ve form alanlarına erişmez.</p>
       </Section>
       <Section title="İletişim">
         <p>Gizlilik talepleri <strong>pskakintemiz@gmail.com</strong> veya <strong>+90 546 853 74 69</strong> üzerinden iletilebilir.</p>
@@ -162,13 +162,16 @@ function KvkkNotice() {
         <p>6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında veri sorumlusu Klinik Psikolog Akın Temiz&apos;dir. Randevu formundaki bilgiler elektronik ortamda, doğrudan ilgili kişiden elde edilir.</p>
       </Section>
       <Section title="İşleme amaçları ve aktarım">
-        <p>Veriler randevu talebini yanıtlamak ve iletişim kurmak amacıyla işlenir. E-posta iletimi için Resend; içerik sunumu için Sanity kullanılmaktadır. Umami Cloud etkinleştirilirse anonimleştirilmiş kullanım sinyalleri yalnızca ayrı analitik tercihi sonrasında sağlayıcıya gönderilir.</p>
+        <p>Kimlik ve iletişim verileri ile randevu tercihleri; talebin değerlendirilmesi, geri dönüş yapılması ve online görüşmenin planlanması amacıyla işlenir. Form iletimi Resend üzerinden gerçekleştirilir. Sanity randevu verisi almaz. Umami Cloud etkinleştirilirse yalnızca ayrı analitik tercihi sonrasında kişisel veya sağlık verisi içermeyen kullanım olayları sağlayıcıya gönderilir.</p>
+      </Section>
+      <Section title="Toplama yöntemi ve hukuki sebep">
+        <p>Veriler elektronik randevu formu üzerinden doğrudan ilgili kişiden elde edilir. Somut veri kategorilerine uygulanacak KVKK hukuki sebepleri ve özellikle olası özel nitelikli veri işleme şartları, hizmetin gerçek işleyişi ve sözleşmeleriyle birlikte hukuk uzmanı tarafından kesinleştirilmelidir.</p>
       </Section>
       <Section title="İlgili kişi hakları">
-        <p>KVKK&apos;nın 11. maddesi kapsamındaki bilgi alma, düzeltme, silme/yok etme ve itiraz talepleri <strong>pskakintemiz@gmail.com</strong> adresine iletilebilir.</p>
+        <p>KVKK&apos;nın 11. maddesi kapsamındaki bilgi alma, düzeltme, silme veya yok etme, yapılan işlemlerin aktarılan üçüncü kişilere bildirilmesini isteme ve kanundaki şartlarla itiraz ya da zarar giderimi talep etme hakları bulunur. Başvurular için kullanılan kanal <strong>pskakintemiz@gmail.com</strong> adresidir; resmî başvuru ve kimlik doğrulama usulü hukuk incelemesiyle tamamlanmalıdır.</p>
       </Section>
       <Section title="Hukuki inceleme gerektiren hususlar">
-        <p>Sağlık verilerinin işlenme şartı, yurt dışı aktarım mekanizması, saklama süreleri ve başvuru usulü somut hizmet sözleşmeleri ile birlikte hukuk uzmanı tarafından doğrulanmalıdır. Bu metin açık rıza yerine geçmez.</p>
+        <p>Sağlık verilerinin işlenme şartı, yurt dışı aktarım mekanizması, saklama ve imha süreleri, tebligat adresi ve başvuru usulü somut hizmet sözleşmeleriyle birlikte hukuk uzmanı tarafından doğrulanmalıdır. Bu taslak açık rıza yerine geçmez ve formun kullanılması metne onay verildiği anlamına gelmez.</p>
       </Section>
     </div>
   );
@@ -179,10 +182,10 @@ function CookiePolicy() {
     <div className="space-y-6">
       <PolicyTitle>Çerez ve Analitik Politikası</PolicyTitle>
       <Section title="Mevcut teknolojiler">
-        <p>Site kendi adına analitik veya reklam çerezi yerleştirmez. Analitik tercihini hatırlamak için tarayıcınızda <code>akintemiz-analytics-consent-v1</code> adlı localStorage kaydı tutulur. Bu kayıt kabul veya ret tercihinizi içerir.</p>
+        <p>Site reklam çerezi kullanmaz. Analitik tercihini hatırlamak için tarayıcınızda <code>akintemiz-analytics-consent-v1</code> adlı localStorage kaydı tutulur. Bu kayıt yalnızca kabul veya ret tercihinizi içerir.</p>
       </Section>
       <Section title="Umami Cloud analitiği">
-        <p>Onay verilirse Umami; sayfa görüntüleme, yönlendiren site, tarayıcı/donanım bilgileri, yaklaşık konum ve anonim etkileşim olaylarını ölçebilir. IP adresi standart analitik kaydında saklanmasa da konum üretimi, güvenlik ve operasyonel loglar için geçici olarak işlenebilir. URL sorguları ve hash değerleri gönderilmez.</p>
+        <p>Onay verilirse Umami; sayfa görüntüleme, yönlendiren site, tarayıcı ve cihaz bilgileri, yaklaşık konum ve anonim etkileşim olaylarını ölçebilir. IP adresi standart analitik kaydında saklanmasa da konum üretimi, güvenlik ve operasyonel loglar için geçici olarak işlenebilir. URL sorguları ve hash değerleri gönderilmez; sayfa içindeki hash değişiklikleri yeni ziyaret sayılmaz.</p>
         <p>Ölçülen özel olaylar yalnızca randevu formu başarı durumu ile telefon, WhatsApp ve Instagram tıklamalarıdır. Form değerleri, sağlık bilgisi, e-posta, telefon veya kullanıcı kimliği event verisi yapılmaz.</p>
       </Section>
       <Section title="Yurt dışı aktarım ve saklama">

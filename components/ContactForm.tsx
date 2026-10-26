@@ -32,9 +32,6 @@ const contactFormSchema = z.object({
   date: z.string().min(1, "Lütfen tercih ettiğiniz tarihi seçiniz."),
   format: z.string().min(1, "Lütfen seans formatını seçiniz."),
   notes: z.string().optional(),
-  privacyNoticeAccepted: z.boolean().refine((value) => value, {
-    message: "KVKK Aydınlatma Metni'ni okuduğunuzu onaylayınız.",
-  }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -58,7 +55,6 @@ export function ContactForm({ services }: ContactFormProps) {
       date: "",
       format: "Online",
       notes: "",
-      privacyNoticeAccepted: false,
     },
     mode: "onTouched",
   });
@@ -328,43 +324,17 @@ export function ContactForm({ services }: ContactFormProps) {
             )}
           />
 
-          <Controller
-            name="privacyNoticeAccepted"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <label htmlFor="privacyNoticeAccepted" className="flex cursor-pointer items-start gap-3 rounded-2xl border border-brand-border bg-brand-bg/50 p-4 text-xs leading-relaxed text-brand-body">
-                  <input
-                    id="privacyNoticeAccepted"
-                    name={field.name}
-                    type="checkbox"
-                    checked={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    aria-invalid={fieldState.invalid}
-                    aria-describedby={fieldState.invalid ? "privacyNoticeAccepted-error" : undefined}
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-brand-heading"
-                  />
-                  <span>
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        openLegalDialog("kvkk");
-                      }}
-                      className="font-semibold text-brand-heading underline underline-offset-2 hover:text-brand-hover"
-                    >
-                      KVKK Aydınlatma Metni&apos;ni
-                    </button>{" "}
-                    okudum. Bu onay yalnızca aydınlatma metninin okunduğunu belirtir; pazarlama izni değildir.
-                  </span>
-                </label>
-                {fieldState.invalid ? (
-                  <FieldError id="privacyNoticeAccepted-error" errors={[fieldState.error]} className="text-xs text-red-600" />
-                ) : null}
-              </Field>
-            )}
-          />
+          <p className="rounded-2xl border border-brand-border bg-brand-bg/50 p-4 text-xs leading-relaxed text-brand-body">
+            Formu göndermeden önce kişisel verilerinizin nasıl işlendiğini{" "}
+            <button
+              type="button"
+              onClick={() => openLegalDialog("kvkk")}
+              className="font-semibold text-brand-heading underline underline-offset-2 hover:text-brand-hover"
+            >
+              KVKK Aydınlatma Metni&apos;nden
+            </button>{" "}
+            inceleyebilirsiniz. Bu bilgilendirme bir pazarlama izni veya açık rıza talebi değildir.
+          </p>
 
           {/* Gönder Butonu */}
           <Button
