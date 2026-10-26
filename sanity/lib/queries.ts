@@ -89,35 +89,54 @@ export const EDUCATION_QUERY = `
       title,
       institution,
       desc,
-      side,
+      year,
+      category,
+      certificateUrl,
       certificateImage
-    },
-    skillsTagline,
-    skillsHeading,
-    skillsDescription,
-    technicalSkills
+    }
   }
 `;
 export const CONTACT_QUERY = `
-  *[_type == "contact"][0] {
-    tagline,
-    heading,
-    description,
-    locationTitle,
-    locationDetails,
-    onlineTitle,
-    onlineDetails,
-    whatsappNumber,
-    whatsappDisplay,
-    phoneRaw,
-    phoneDisplay,
-    instagramHandle,
-    email,
-    kvkkText
+  {
+    "contact": *[_type == "contact"][0] {
+      tagline,
+      heading,
+      description,
+      onlineTitle,
+      onlineDetails,
+      whatsappNumber,
+      whatsappDisplay,
+      phoneRaw,
+      phoneDisplay,
+      instagramHandle,
+      email,
+      kvkkText
+    },
+    "services": *[_type == "services"][0].items[] {
+      _key,
+      title
+    }
   }
 `;
+export const FAQ_QUERY = defineQuery(`
+  *[_type == "faq"][0] {
+    tagline,
+    heading,
+    items[] {
+      _key,
+      question,
+      answer
+    }
+  }
+`);
 export const FOOTER_QUERY = `
   {
+    "footer": *[_type == "footer"][0] {
+      brandTitle,
+      brandDescription,
+      availabilityText,
+      copyrightText
+    },
     "navbar": *[_type == "navbar"][0] {
       title,
       subtitle,

@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,19 +15,16 @@ export interface MobileNavProps {
   links?: { href: string; label: string }[];
   ctaText?: string;
   ctaLink?: string;
+  brandName: string;
+  brandRole?: string;
 }
 
-const defaultLinks = [
-  { href: "#hakkimda", label: "Hakkımda" },
-  { href: "#hizmetler", label: "Hizmetler & Çalışma Alanları" },
-  { href: "#surec", label: "Terapi Süreci" },
-  { href: "#iletisim", label: "İletişim & Konum" },
-]
-
 export function MobileNav({
-  links = defaultLinks,
+  links = [],
   ctaText = "Randevu Al",
   ctaLink = "#randevu",
+  brandName,
+  brandRole,
 }: MobileNavProps) {
   return (
     <Sheet>
@@ -37,7 +33,7 @@ export function MobileNav({
           <Button
             variant="outline"
             size="icon"
-            className="md:hidden border-brand-border bg-brand-primary/40 text-brand-heading hover:bg-brand-primary hover:text-brand-heading"
+            className="border-brand-border bg-brand-primary/40 text-brand-heading hover:bg-brand-primary hover:text-brand-heading xl:hidden"
             aria-label="Menüyü Aç"
           >
             <Menu className="h-5 w-5" />
@@ -52,10 +48,10 @@ export function MobileNav({
         <div>
           <SheetHeader className="text-left border-b border-brand-border pb-4">
             <SheetTitle className="text-xl font-serif font-bold text-brand-heading tracking-tight">
-              Psk. Akın Temiz
+              {brandName}
             </SheetTitle>
             <SheetDescription className="text-xs text-brand-body">
-              Klinik Psikoloji & Psikoterapi
+              {brandRole}
             </SheetDescription>
           </SheetHeader>
 
@@ -65,12 +61,12 @@ export function MobileNav({
               <SheetClose
                 key={link.href}
                 render={
-                  <Link
+                  <a
                     href={link.href}
                     className="px-3 py-2.5 rounded-xl text-sm font-medium text-brand-heading hover:bg-brand-primary/60 hover:text-brand-heading transition-colors"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 }
               />
             ))}
@@ -82,17 +78,14 @@ export function MobileNav({
           <SheetClose
             nativeButton={false}
             render={
-              <Link
-                href={ctaLink}
+              <a
+                href={ctaLink.startsWith("#") ? ctaLink : "#randevu"}
                 className="w-full text-center py-3 px-4 rounded-xl bg-brand-heading text-brand-bg font-medium text-sm hover:bg-brand-heading/90 transition-colors shadow-sm"
               >
                 {ctaText}
-              </Link>
+              </a>
             }
           />
-          <p className="text-center text-[11px] text-brand-muted">
-            Hafta içi: 09:00 - 18:00
-          </p>
         </SheetFooter>
       </SheetContent>
     </Sheet>

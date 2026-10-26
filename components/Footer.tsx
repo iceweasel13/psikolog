@@ -1,16 +1,21 @@
-import Link from "next/link";
 import {
   MapPin,
   MessageCircle,
   Phone,
   Mail,
-  ExternalLink,
 } from "lucide-react";
+import { InstagramIcon } from "@/components/icons/BrandIcons";
 import { client } from "@/sanity/lib/client";
 import { FOOTER_QUERY } from "@/sanity/lib/queries";
 import { LegalLinks } from "@/components/LegalModal";
 
 export interface CombinedFooterData {
+  footer: {
+    brandTitle: string;
+    brandDescription: string;
+    availabilityText: string;
+    copyrightText: string;
+  };
   navbar: {
     title: string;
     subtitle: string;
@@ -34,30 +39,32 @@ export async function Footer() {
   const data = await client.fetch<CombinedFooterData>(
     FOOTER_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
 
-  const { navbar, services, contact } = data;
+  const { footer, navbar, services, contact } = data;
+  const whatsappNumber = contact.whatsappNumber.replace(/\D/g, "");
+  const phoneNumber = contact.phoneRaw.replace(/\s/g, "");
 
   return (
     <footer className="w-full bg-brand-heading text-stone-300 pt-16 pb-12 border-t border-brand-hover/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Ana Kolonlar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-12 border-b border-white/10">
-          
+
           {/* Marka & Tanıtım (Navbar tablosundan gelir) */}
           <div className="lg:col-span-4 space-y-4">
             <span className="text-xl sm:text-2xl font-serif font-bold text-white tracking-tight block">
-              {navbar.title}
+              {footer.brandTitle}
             </span>
             <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-sm">
-              {navbar.subtitle} alanında bireysel ve online psikolojik danışmanlık. Yüz yüze Samsun, online Türkiye geneli.
+              {footer.brandDescription}
             </p>
             <div className="pt-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-brand-primary">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Danışan Kabulü Aktif
+                {footer.availabilityText}
               </span>
             </div>
           </div>
@@ -70,9 +77,9 @@ export async function Footer() {
             <ul className="space-y-2 text-xs sm:text-sm">
               {services.items?.map((service, idx) => (
                 <li key={idx}>
-                  <Link href="#hizmetler" className="hover:text-white transition-colors">
+                  <a href="#hizmetler" className="hover:text-white transition-colors">
                     {service.title}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -86,9 +93,9 @@ export async function Footer() {
             <ul className="space-y-2 text-xs sm:text-sm">
               {navbar.navItems?.map((item, idx) => (
                 <li key={idx}>
-                  <Link href={item.href} className="hover:text-white transition-colors">
+                  <a href={item.href} className="hover:text-white transition-colors">
                     {item.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -106,9 +113,10 @@ export async function Footer() {
               </li>
               <li>
                 <a
-                  href={`https://wa.me/${contact.whatsappNumber}`}
+                  href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   rel="noreferrer"
+                  data-umami-event="contact-whatsapp-click"
                   className="flex items-center gap-2.5 hover:text-white transition-colors"
                 >
                   <MessageCircle className="w-4 h-4 text-brand-primary shrink-0" />
@@ -117,7 +125,8 @@ export async function Footer() {
               </li>
               <li>
                 <a
-                  href={`tel:${contact.phoneRaw}`}
+                  href={`tel:${phoneNumber}`}
+                  data-umami-event="contact-phone-click"
                   className="flex items-center gap-2.5 hover:text-white transition-colors"
                 >
                   <Phone className="w-4 h-4 text-brand-primary shrink-0" />
@@ -126,12 +135,13 @@ export async function Footer() {
               </li>
               <li>
                 <a
-                  href={`https://instagram.com/${contact.instagramHandle}`}
+                  href={`https://www.instagram.com/${contact.instagramHandle}/`}
                   target="_blank"
                   rel="noreferrer"
+                  data-umami-event="contact-instagram-click"
                   className="flex items-center gap-2.5 hover:text-white transition-colors"
                 >
-                  <Phone className="w-4 h-4 text-brand-primary shrink-0" />
+                  <InstagramIcon className="w-4 h-4 text-brand-primary shrink-0" />
                   <span>Instagram · @{contact.instagramHandle}</span>
                 </a>
               </li>
@@ -144,17 +154,6 @@ export async function Footer() {
                   <span>{contact.email}</span>
                 </a>
               </li>
-              <li>
-                <a
-                  href="https://doktortakvimi.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2.5 hover:text-white transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4 text-brand-primary shrink-0" />
-                  <span>Doktortakvimi.com</span>
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -162,7 +161,7 @@ export async function Footer() {
 
         {/* Alt Telif & Yasal Haklar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
-          <p>© 2026 {navbar.title} · Tüm hakları saklıdır.</p>
+          <p>{footer.copyrightText}</p>
           <LegalLinks />
         </div>
 

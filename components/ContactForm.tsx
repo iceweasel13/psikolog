@@ -17,6 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { openLegalDialog } from "@/components/LegalModal";
+import { ANALYTICS_EVENTS, trackAnalyticsEvent } from "@/lib/analytics";
 
 const contactFormSchema = z.object({
   firstName: z.string().min(2, "Ad en az 2 karakter olmalıdır."),
@@ -30,11 +32,18 @@ const contactFormSchema = z.object({
   date: z.string().min(1, "Lütfen tercih ettiğiniz tarihi seçiniz."),
   format: z.string().min(1, "Lütfen seans formatını seçiniz."),
   notes: z.string().optional(),
+  privacyNoticeAccepted: z.boolean().refine((value) => value, {
+    message: "KVKK Aydınlatma Metni'ni okuduğunuzu onaylayınız.",
+  }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
-export function ContactForm() {
+interface ContactFormProps {
+  services: { _key: string; title: string }[];
+}
+
+export function ContactForm({ services }: ContactFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -47,8 +56,9 @@ export function ContactForm() {
       email: "",
       service: "",
       date: "",
-      format: "",
+      format: "Online",
       notes: "",
+      privacyNoticeAccepted: false,
     },
     mode: "onTouched",
   });
@@ -67,6 +77,7 @@ export function ContactForm() {
       }
 
       setIsSubmitted(true);
+      trackAnalyticsEvent(ANALYTICS_EVENTS.appointmentSuccess);
       form.reset();
     } catch {
       alert("Mesaj iletilirken bir sorun oluştu. Lütfen doğrudan telefon veya WhatsApp ile iletişime geçin.");
@@ -113,7 +124,8 @@ export function ContactForm() {
                   <Input
                     {...field}
                     id={field.name}
-                    placeholder="Adınız"
+                    autoComplete="given-name"
+                    placeholder="Adınız…"
                     aria-invalid={fieldState.invalid}
                     className="bg-white border-brand-border text-brand-heading placeholder:text-brand-muted focus-visible:border-brand-hover focus-visible:ring-brand-hover/20"
                   />
@@ -135,7 +147,8 @@ export function ContactForm() {
                   <Input
                     {...field}
                     id={field.name}
-                    placeholder="Soyadınız"
+                    autoComplete="family-name"
+                    placeholder="Soyadınız…"
                     aria-invalid={fieldState.invalid}
                     className="bg-white border-brand-border text-brand-heading placeholder:text-brand-muted focus-visible:border-brand-hover focus-visible:ring-brand-hover/20"
                   />
@@ -161,7 +174,8 @@ export function ContactForm() {
                     {...field}
                     id={field.name}
                     type="tel"
-                    placeholder="05xx xxx xx xx"
+                    autoComplete="tel"
+                    placeholder="05xx xxx xx xx…"
                     aria-invalid={fieldState.invalid}
                     className="bg-white border-brand-border text-brand-heading placeholder:text-brand-muted focus-visible:border-brand-hover focus-visible:ring-brand-hover/20"
                   />
@@ -184,7 +198,9 @@ export function ContactForm() {
                     {...field}
                     id={field.name}
                     type="email"
-                    placeholder="ornek@mail.com"
+                    autoComplete="email"
+                    spellCheck={false}
+                    placeholder="ornek@mail.com…"
                     aria-invalid={fieldState.invalid}
                     className="bg-white border-brand-border text-brand-heading placeholder:text-brand-muted focus-visible:border-brand-hover focus-visible:ring-brand-hover/20"
                   />
@@ -215,17 +231,14 @@ export function ContactForm() {
                     aria-invalid={fieldState.invalid}
                     className="bg-white border-brand-border text-brand-heading focus:border-brand-hover focus:ring-brand-hover/20"
                   >
-                    <SelectValue placeholder="Seçiniz..." />
+                    <SelectValue placeholder="Seçiniz…" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-brand-border text-brand-heading">
-                    <SelectItem value="tanisma">İlk Tanışma Görüşmesi (Ücretsiz)</SelectItem>
-                    <SelectItem value="bireysel">Bireysel Terapi</SelectItem>
-                    <SelectItem value="ergen">Ergen Terapisi</SelectItem>
-                    <SelectItem value="online">Online Terapi</SelectItem>
-                    <SelectItem value="cinsel">Cinsel Terapi</SelectItem>
-                    <SelectItem value="mindfulness">Mindfulness Uygulamaları</SelectItem>
-                    <SelectItem value="cift">Çift Terapisi</SelectItem>
-                    <SelectItem value="oyun">Oyun Terapisi</SelectItem>
+                    {services.map((service) => (
+                      <SelectItem key={service._key} value={service.title}>
+                        {service.title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 {fieldState.invalid && (
@@ -277,11 +290,10 @@ export function ContactForm() {
                       aria-invalid={fieldState.invalid}
                       className="bg-white border-brand-border text-brand-heading focus:border-brand-hover focus:ring-brand-hover/20"
                     >
-                      <SelectValue placeholder="Seçiniz..." />
+                      <SelectValue placeholder="Seçiniz…" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-brand-border text-brand-heading">
-                      <SelectItem value="yuz-yuze">Yüz yüze (Samsun)</SelectItem>
-                      <SelectItem value="online">Online (Doktortakvimi.com / Meet)</SelectItem>
+                      <SelectItem value="Online">Online</SelectItem>
                     </SelectContent>
                   </Select>
                   {fieldState.invalid && (
@@ -306,7 +318,7 @@ export function ContactForm() {
                   id={field.name}
                   rows={3}
                   aria-invalid={fieldState.invalid}
-                  placeholder="Görüşmek istediğiniz konu veya sormak istediğiniz sorular..."
+                  placeholder="Yalnızca iletişim veya randevu tercihinizi yazın; ayrıntılı sağlık bilgisi paylaşmayın…"
                   className="bg-white border-brand-border text-brand-heading placeholder:text-brand-muted focus-visible:border-brand-hover focus-visible:ring-brand-hover/20 resize-none"
                 />
                 {fieldState.invalid && (
@@ -316,14 +328,52 @@ export function ContactForm() {
             )}
           />
 
+          <Controller
+            name="privacyNoticeAccepted"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <label htmlFor="privacyNoticeAccepted" className="flex cursor-pointer items-start gap-3 rounded-2xl border border-brand-border bg-brand-bg/50 p-4 text-xs leading-relaxed text-brand-body">
+                  <input
+                    id="privacyNoticeAccepted"
+                    name={field.name}
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={fieldState.invalid ? "privacyNoticeAccepted-error" : undefined}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-brand-heading"
+                  />
+                  <span>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        openLegalDialog("kvkk");
+                      }}
+                      className="font-semibold text-brand-heading underline underline-offset-2 hover:text-brand-hover"
+                    >
+                      KVKK Aydınlatma Metni&apos;ni
+                    </button>{" "}
+                    okudum. Bu onay yalnızca aydınlatma metninin okunduğunu belirtir; pazarlama izni değildir.
+                  </span>
+                </label>
+                {fieldState.invalid ? (
+                  <FieldError id="privacyNoticeAccepted-error" errors={[fieldState.error]} className="text-xs text-red-600" />
+                ) : null}
+              </Field>
+            )}
+          />
+
           {/* Gönder Butonu */}
           <Button
             type="submit"
             disabled={loading}
-            className="w-full py-6 mt-4 bg-brand-heading hover:bg-brand-heading/90 text-brand-bg font-semibold text-base rounded-2xl shadow-sm transition-all cursor-pointer"
+            className="mt-4 w-full cursor-pointer rounded-2xl bg-brand-heading py-6 text-base font-semibold text-brand-bg shadow-sm transition-[background-color,box-shadow,transform] hover:bg-brand-heading/90"
           >
             {loading ? (
-              "Gönderiliyor..."
+              "Gönderiliyor…"
             ) : (
               <>
                 <Send className="w-4 h-4 mr-2" />

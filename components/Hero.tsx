@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { InteractiveSynapse } from "@/components/InteractiveSynapse";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { HERO_QUERY } from "@/sanity/lib/queries";
 import { urlFor, type SanityImageSource } from "@/sanity/lib/image";
@@ -30,15 +29,11 @@ export async function Hero() {
   const heroData = await client.fetch<HeroData>(
     HERO_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
 
   return (
     <section className="relative w-full overflow-hidden bg-brand-bg pt-8 pb-20 lg:py-24">
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-75">
-        <InteractiveSynapse />
-      </div>
-
       <div className="pointer-events-none absolute -top-24 left-1/4 w-[600px] sm:w-[850px] h-[550px] opacity-40 blur-[130px] -z-0">
         <div className="w-full h-full bg-gradient-to-br from-brand-primary via-amber-100/50 to-stone-200 rounded-full" />
       </div>
@@ -46,37 +41,18 @@ export async function Hero() {
       <div className="relative z-10 section-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           <MotionItem delay={0.05} className="lg:col-span-7 space-y-7 text-left">
-            <div className="badge-pill">
-              <Sparkles className="w-3.5 h-3.5 text-brand-hover" />
-              <span>{heroData.badgeText}</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-brand-heading tracking-tight leading-[1.15]">
-              {heroData.titleMain} <br className="hidden sm:inline" />
-              <span className="italic font-normal text-brand-hover">{heroData.titleHighlight}</span>
-            </h1>
-
             <p className="text-base sm:text-lg text-brand-body leading-relaxed max-w-xl">
               {heroData.description}
             </p>
 
-            <div className="relative p-6 sm:p-7 rounded-3xl bg-white/80 backdrop-blur-md border-l-4 border-brand-hover border-y border-r border-brand-border shadow-xs">
-              <span className="absolute -top-3 left-4 text-3xl font-serif text-brand-hover leading-none select-none">
-                “
-              </span>
-              <p className="font-serif italic text-brand-heading text-sm sm:text-base leading-relaxed">
-                {heroData.quote}
-              </p>
-            </div>
-
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
-              <Link
-                href={heroData.ctaPrimaryLink}
+              <a
+                href="#randevu"
                 className="btn-primary group cursor-pointer"
               >
                 <span>{heroData.ctaPrimaryText}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </a>
               <Link
                 href={heroData.ctaSecondaryLink}
                 className="btn-secondary"

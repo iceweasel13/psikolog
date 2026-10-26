@@ -1,11 +1,10 @@
 import {
-  MapPin,
   Laptop,
-  MessageCircle,
   Phone,
   Mail,
   Lock,
 } from "lucide-react";
+import { InstagramIcon, WhatsAppIcon } from "@/components/icons/BrandIcons";
 import { client } from "@/sanity/lib/client";
 import { CONTACT_QUERY } from "@/sanity/lib/queries";
 import { ContactForm } from "@/components/ContactForm";
@@ -15,8 +14,6 @@ export interface ContactData {
   tagline: string;
   heading: string;
   description: string;
-  locationTitle: string;
-  locationDetails: string;
   onlineTitle: string;
   onlineDetails: string;
   whatsappNumber: string;
@@ -28,15 +25,22 @@ export interface ContactData {
   kvkkText: string;
 }
 
+interface ContactPageData {
+  contact: ContactData;
+  services: { _key: string; title: string }[];
+}
+
 /**
  * İletişim kanallarının ve randevu başvuru formunun yer aldığı ana bölüm.
  */
 export async function Contact() {
-  const contact = await client.fetch<ContactData>(
+  const { contact, services } = await client.fetch<ContactPageData>(
     CONTACT_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
+  const whatsappNumber = contact.whatsappNumber.replace(/\D/g, "");
+  const phoneNumber = contact.phoneRaw.replace(/\s/g, "");
 
   return (
     <section
@@ -59,15 +63,7 @@ export async function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           <MotionItem delay={0.1} className="lg:col-span-5 space-y-4">
             <div className="info-tile">
-              <MapPin className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-brand-heading">{contact.locationTitle}</p>
-                <p className="text-brand-body text-xs mt-0.5">{contact.locationDetails}</p>
-              </div>
-            </div>
-
-            <div className="info-tile">
-              <Laptop className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
+              <Laptop className="h-5 w-5 shrink-0 text-brand-heading" aria-hidden="true" />
               <div>
                 <p className="font-semibold text-brand-heading">{contact.onlineTitle}</p>
                 <p className="text-brand-body text-xs mt-0.5">{contact.onlineDetails}</p>
@@ -75,13 +71,14 @@ export async function Contact() {
             </div>
 
             <div className="info-tile">
-              <MessageCircle className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
+              <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#168f45]" />
               <div>
                 <p className="font-semibold text-brand-heading">WhatsApp Hattı</p>
                 <a
-                  href={`https://wa.me/${contact.whatsappNumber}`}
+                  href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   rel="noreferrer"
+                  data-umami-event="contact-whatsapp-click"
                   className="text-brand-body text-xs hover:text-brand-heading transition-colors"
                 >
                   {contact.whatsappDisplay}
@@ -90,23 +87,24 @@ export async function Contact() {
             </div>
 
             <div className="info-tile">
-              <Phone className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
+              <Phone className="h-5 w-5 shrink-0 text-brand-heading" aria-hidden="true" />
               <div>
                 <p className="font-semibold text-brand-heading">Telefon</p>
-                <a href={`tel:${contact.phoneRaw}`} className="text-brand-body text-xs hover:text-brand-heading transition-colors">
+                <a href={`tel:${phoneNumber}`} data-umami-event="contact-phone-click" className="text-brand-body text-xs hover:text-brand-heading transition-colors">
                   {contact.phoneDisplay}
                 </a>
               </div>
             </div>
 
             <div className="info-tile">
-              <Phone className="w-5 h-5 text-brand-heading shrink-0 mt-0.5" />
+              <InstagramIcon className="h-5 w-5 shrink-0 text-fuchsia-700" />
               <div>
                 <p className="font-semibold text-brand-heading">Instagram</p>
                 <a
-                  href={`https://instagram.com/${contact.instagramHandle}`}
+                  href={`https://www.instagram.com/${contact.instagramHandle}/`}
                   target="_blank"
                   rel="noreferrer"
+                  data-umami-event="contact-instagram-click"
                   className="text-brand-body text-xs hover:text-brand-heading transition-colors"
                 >
                   @{contact.instagramHandle}
@@ -136,7 +134,7 @@ export async function Contact() {
           </MotionItem>
 
           <MotionItem delay={0.2} className="lg:col-span-7">
-            <ContactForm />
+            <ContactForm services={services ?? []} />
           </MotionItem>
         </div>
       </div>

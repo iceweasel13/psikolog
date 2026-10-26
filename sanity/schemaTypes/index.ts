@@ -6,8 +6,10 @@ import { servicesType } from './services'
 import { educationType } from './education'
 import { reviewsType } from './revioews'
 import { contactType } from './contact'
+import { faqType } from './faq'
+import { footerType } from './footer'
 
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [navbarType, heroType, aboutType, servicesType, reviewsType, educationType, contactType,],
+  types: [navbarType, heroType, aboutType, servicesType, reviewsType, educationType, contactType, faqType, footerType],
 }

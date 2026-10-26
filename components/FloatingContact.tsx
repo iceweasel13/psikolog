@@ -1,15 +1,18 @@
-import { Phone, MessageCircle } from "lucide-react";
+import { Phone } from "lucide-react";
 import { client } from "@/sanity/lib/client";
+import { InstagramIcon, WhatsAppIcon } from "@/components/icons/BrandIcons";
 
 interface ContactSnippet {
   phoneRaw: string;
   whatsappNumber: string;
+  instagramHandle: string;
 }
 
 const SNIPPET_QUERY = `
   *[_type == "contact"][0] {
     phoneRaw,
-    whatsappNumber
+    whatsappNumber,
+    instagramHandle
   }
 `;
 
@@ -20,11 +23,12 @@ export async function FloatingContact() {
   const data = await client.fetch<ContactSnippet>(
     SNIPPET_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
 
   const phone = data?.phoneRaw;
   const whatsapp = data?.whatsappNumber;
+  const instagram = data?.instagramHandle;
 
   return (
     <aside
@@ -36,28 +40,46 @@ export async function FloatingContact() {
           Hemen Arayın
         </span>
         <a
-          href={`tel:${phone}`}
+          href={phone ? `tel:${phone.replace(/\s/g, "")}` : "#randevu"}
           aria-label="Telefonla hemen arayın"
+          data-umami-event="contact-phone-click"
           className="floating-action-btn"
         >
           <Phone className="h-5 w-5" strokeWidth={2} />
         </a>
       </div>
 
+      {instagram ? (
+        <div className="group relative flex items-center">
+          <span role="tooltip" className="floating-tooltip">Instagram</span>
+          <a
+            href={`https://www.instagram.com/${instagram}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram profilini açın"
+            data-umami-event="contact-instagram-click"
+            className="floating-action-btn-instagram"
+          >
+            <InstagramIcon className="h-5 w-5" />
+          </a>
+        </div>
+      ) : null}
+
       <div className="group relative flex items-center">
         <span role="tooltip" className="floating-tooltip">
           WhatsApp Mesajı
         </span>
         <a
-          href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(
+          href={`https://wa.me/${whatsapp?.replace(/\D/g, "")}?text=${encodeURIComponent(
             "Merhaba Akın Bey, danışmanlık ve randevu süreci hakkında bilgi almak istiyorum."
           )}`}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="WhatsApp üzerinden mesaj gönderin"
+          data-umami-event="contact-whatsapp-click"
           className="floating-action-btn-whatsapp"
         >
-          <MessageCircle className="h-5 w-5" strokeWidth={2} />
+          <WhatsAppIcon className="h-6 w-6" />
         </a>
       </div>
     </aside>

@@ -25,7 +25,7 @@ export async function AboutMe() {
   const aboutData = await client.fetch<AboutData>(
     ABOUT_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
 
   return (
@@ -35,7 +35,10 @@ export async function AboutMe() {
           <span className="clinical-tagline">
             {aboutData.tagline}
           </span>
-          <h2 className="clinical-heading">
+          <h1 className="clinical-heading">
+            Klinik Psikolog Akın Temiz
+          </h1>
+          <h2 className="text-xl sm:text-2xl font-serif font-semibold text-brand-heading">
             {aboutData.heading}
           </h2>
         </MotionItem>

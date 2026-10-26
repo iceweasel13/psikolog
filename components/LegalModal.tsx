@@ -1,237 +1,198 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { X, ShieldCheck, FileText } from "lucide-react";
+import { Cookie, FileText, Settings2, ShieldCheck, X } from "lucide-react";
+import { openPrivacyPreferences } from "@/components/PrivacyConsent";
 
-type LegalTab = "gizlilik" | "kvkk";
+type LegalTab = "gizlilik" | "kvkk" | "cerez";
 
+const OPEN_LEGAL_EVENT = "legal-dialog:open";
 const emptySubscribe = () => () => {};
+
+export function openLegalDialog(tab: LegalTab) {
+  window.dispatchEvent(new CustomEvent<LegalTab>(OPEN_LEGAL_EVENT, { detail: tab }));
+}
 
 export function LegalLinks() {
   const [activeTab, setActiveTab] = useState<LegalTab | null>(null);
+  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
-  const isMounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
+  useEffect(() => {
+    const handleOpen = (event: Event) => {
+      setActiveTab((event as CustomEvent<LegalTab>).detail);
+    };
+    window.addEventListener(OPEN_LEGAL_EVENT, handleOpen);
+    return () => window.removeEventListener(OPEN_LEGAL_EVENT, handleOpen);
+  }, []);
 
   useEffect(() => {
     if (!activeTab) return;
-
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveTab(null);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveTab(null);
     };
-
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [activeTab]);
 
+  const tabs: { id: LegalTab; label: string; icon: typeof ShieldCheck }[] = [
+    { id: "gizlilik", label: "Gizlilik", icon: ShieldCheck },
+    { id: "kvkk", label: "KVKK", icon: FileText },
+    { id: "cerez", label: "Çerez ve Analitik", icon: Cookie },
+  ];
+
   return (
     <>
-      <div className="flex items-center gap-4">
-        <button
-          type="button"
-          onClick={() => setActiveTab("gizlilik")}
-          className="hover:text-stone-200 transition-colors cursor-pointer"
-        >
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:justify-end">
+        <button type="button" onClick={() => setActiveTab("gizlilik")} className="hover:text-stone-200 transition-colors">
           Gizlilik Politikası
         </button>
-        <span>·</span>
-        <button
-          type="button"
-          onClick={() => setActiveTab("kvkk")}
-          className="hover:text-stone-200 transition-colors cursor-pointer"
-        >
+        <span aria-hidden="true">·</span>
+        <button type="button" onClick={() => setActiveTab("kvkk")} className="hover:text-stone-200 transition-colors">
           KVKK Aydınlatma Metni
+        </button>
+        <span aria-hidden="true">·</span>
+        <button type="button" onClick={() => setActiveTab("cerez")} className="hover:text-stone-200 transition-colors">
+          Çerez Politikası
+        </button>
+        <span aria-hidden="true">·</span>
+        <button type="button" onClick={openPrivacyPreferences} className="inline-flex items-center gap-1 hover:text-stone-200 transition-colors">
+          <Settings2 className="h-3.5 w-3.5" aria-hidden="true" />
+          Çerez Tercihleri
         </button>
       </div>
 
-      {activeTab && isMounted && createPortal(
-        <div
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setActiveTab(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-brand-heading/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-brand-border bg-white shadow-2xl"
-          >
-            {/* Üst Bar & Sekmeler */}
-            <div className="flex items-center justify-between border-b border-brand-border/60 px-6 py-4 bg-brand-bg/40">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("gizlilik")}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                    activeTab === "gizlilik"
-                      ? "bg-brand-heading text-white shadow-xs"
-                      : "text-brand-heading hover:bg-brand-primary/40"
-                  }`}
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Gizlilik Politikası</span>
-                </button>
+      {activeTab && isMounted
+        ? createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="legal-dialog-title"
+              onClick={() => setActiveTab(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-brand-heading/60 p-4 backdrop-blur-xs"
+            >
+              <div onClick={(event) => event.stopPropagation()} className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-brand-border bg-white shadow-2xl">
+                <div className="flex items-start justify-between gap-4 border-b border-brand-border/60 bg-brand-bg/40 px-5 py-4 sm:items-center sm:px-6">
+                  <div className="flex flex-wrap gap-2" role="tablist" aria-label="Yasal metinler">
+                    {tabs.map((tab) => {
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={activeTab === tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-colors ${activeTab === tab.id ? "bg-brand-heading text-white" : "text-brand-heading hover:bg-brand-primary/40"}`}
+                        >
+                          <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button type="button" onClick={() => setActiveTab(null)} aria-label="Yasal metni kapat" className="shrink-0 rounded-full p-2 text-brand-muted hover:bg-brand-bg hover:text-brand-heading">
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("kvkk")}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                    activeTab === "kvkk"
-                      ? "bg-brand-heading text-white shadow-xs"
-                      : "text-brand-heading hover:bg-brand-primary/40"
-                  }`}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>KVKK Aydınlatma Metni</span>
-                </button>
+                <div className="overflow-y-auto p-6 text-sm leading-relaxed text-brand-body sm:p-8">
+                  {activeTab === "gizlilik" ? <PrivacyPolicy /> : null}
+                  {activeTab === "kvkk" ? <KvkkNotice /> : null}
+                  {activeTab === "cerez" ? <CookiePolicy /> : null}
+                </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab(null)}
-                className="rounded-full p-1.5 text-brand-muted hover:bg-brand-bg hover:text-brand-heading transition-colors cursor-pointer"
-                aria-label="Kapat"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Metin İçeriği */}
-            <div className="overflow-y-auto p-6 sm:p-8 space-y-6 text-sm text-brand-body leading-relaxed">
-              {activeTab === "gizlilik" ? (
-                <div className="space-y-5">
-                  <div>
-                    <h3 className="text-xl font-serif font-bold text-brand-heading mb-1">
-                      Gizlilik Politikası
-                    </h3>
-                    <p className="text-xs text-brand-muted">
-                      Son güncellenme: 2026 · Klinik Psikolog Akın Temiz
-                    </p>
-                  </div>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">1. Veri Sorumlusu</h4>
-                    <p>
-                      Bu web sitesi (<strong>akintemiz.com</strong>) üzerinden paylaşılan kişisel veriler, Klinik Psikolog Akın Temiz tarafından veri sorumlusu sıfatıyla korunmakta ve işlenmektedir.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">2. Toplanan Kişisel Veriler</h4>
-                    <p>
-                      Randevu talebi ve iletişim formu üzerinden tarafımıza iletilen; ad, soyad, telefon numarası, e-posta adresi, talep edilen hizmet türü ve isteğe bağlı iletilen ön başvuru notları toplanmaktadır.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">3. Verilerin Kullanım Amacı</h4>
-                    <p>
-                      Toplanan veriler yalnızca randevu talebinin değerlendirilmesi, uygun seans takviminin belirlenmesi ve danışan ile doğrudan iletişim kurulması amacıyla sınırlı olarak kullanılır.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">4. Terapötik Gizlilik ve Meslek Etiği</h4>
-                    <p>
-                      Psikolojik danışmanlık ve psikoterapi süreçlerinde paylaşılan tüm bilgiler, Türk Psikologlar Derneği Etik Yönetmeliği ve mesleki sır saklama ilkeleri gereğince mutlak bir gizlilik esasıyla muhafaza edilir.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">5. Üçüncü Taraflarla Paylaşım</h4>
-                    <p>
-                      Kişisel verileriniz hiçbir koşulda ticari, reklam veya pazarlama amacıyla üçüncü şahıslara satılmaz veya devredilmez. Yasal mevzuat gereği adli veya resmi makamlarca talep edilmesi hali istisnadır.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">6. İletişim</h4>
-                    <p>
-                      Gizlilik politikamıza ilişkin tüm soru ve taleplerinizi <strong>info@akintemiz.com</strong> adresi veya <strong>+90 546 853 74 69</strong> numaralı iletişim hattı üzerinden iletebilirsiniz.
-                    </p>
-                  </section>
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  <div>
-                    <h3 className="text-xl font-serif font-bold text-brand-heading mb-1">
-                      KVKK Aydınlatma Metni
-                    </h3>
-                    <p className="text-xs text-brand-muted">
-                      6698 Sayılı Kişisel Verilerin Korunması Kanunu Kapsamında
-                    </p>
-                  </div>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">1. Veri Sorumlusunun Kimliği</h4>
-                    <p>
-                      6698 sayılı Kişisel Verilerin Korunması Kanunu (&quot;KVKK&quot;) uyarınca, veri sorumlusu sıfatıyla Klinik Psikolog Akın Temiz (Samsun) olarak kişisel verilerinizi kanuna uygun şekilde işlemekteyiz.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">2. İşlenen Kişisel Veriler ve Toplama Yöntemi</h4>
-                    <p>
-                      Web sitemizde yer alan randevu formu vasıtasıyla elektronik ortamda toplanan veriler şunlardır:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 pl-2 text-xs sm:text-sm text-brand-heading/90">
-                      <li><strong>Kimlik Verisi:</strong> Ad, Soyad</li>
-                      <li><strong>İletişim Verisi:</strong> Telefon Numarası, E-posta Adresi</li>
-                      <li><strong>Talep Detayı:</strong> Hizmet Alanı Tercihi, Seans Formatı (Yüz yüze / Online) ve Danışan Notu</li>
-                    </ul>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">3. Kişisel Veri İşleme Amaçları ve Hukuki Sebepleri</h4>
-                    <p>
-                      Kişisel verileriniz, KVKK&apos;nın 5/2-c maddesinde düzenlenen &quot;bir sözleşmenin kurulması veya ifasıyla doğrudan doğruya ilgili olması&quot; ve 5/2-f maddesinde yer alan &quot;meşru menfaat&quot; hukuki gerekçelerine dayanılarak; randevu planlaması, danışan iletişimi ve hizmet kalitesinin temini amacıyla işlenir.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">4. Verilerin Aktarılması</h4>
-                    <p>
-                      Kişisel verileriniz üçüncü kişi ya da kuruluşlara ticari amaçla aktarılmaz. Yalnızca yasal zorunluluk doğması durumunda yetkili adli ve idari mercilerle paylaşılabilir.
-                    </p>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h4 className="font-semibold text-brand-heading text-sm">5. İlgili Kişinin Hakları (KVKK Madde 11)</h4>
-                    <p>
-                      KVKK&apos;nın 11. maddesi uyarınca her danışan; kişisel verilerinin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, eksik ya da yanlış işlenmiş verilerin düzeltilmesini isteme ve verilerin silinmesini talep etme haklarına sahiptir.
-                    </p>
-                    <p>
-                      Bu kapsamdaki başvurularınızı <strong>info@akintemiz.com</strong> adresine yazılı olarak iletebilirsiniz. Başvurularınız en geç 30 gün içinde yanıtlanacaktır.
-                    </p>
-                  </section>
-                </div>
-              )}
-            </div>
-
-            {/* Alt Kapat Butonu */}
-            <div className="flex justify-end border-t border-brand-border/60 px-6 py-4 bg-brand-bg/40">
-              <button
-                type="button"
-                onClick={() => setActiveTab(null)}
-                className="px-5 py-2 rounded-xl bg-brand-heading text-white text-xs font-medium hover:bg-brand-heading/90 transition-colors cursor-pointer"
-              >
-                Kapat
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
+            </div>,
+            document.body
+          )
+        : null}
     </>
+  );
+}
+
+function PolicyTitle({ children }: { children: string }) {
+  return (
+    <div className="mb-6">
+      <h2 id="legal-dialog-title" className="font-serif text-2xl font-bold text-brand-heading">{children}</h2>
+      <p className="mt-1 text-xs text-brand-muted">Son güncelleme: 26 Ekim 2026</p>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-2">
+      <h3 className="font-semibold text-brand-heading">{title}</h3>
+      <div className="space-y-2">{children}</div>
+    </section>
+  );
+}
+
+function PrivacyPolicy() {
+  return (
+    <div className="space-y-6">
+      <PolicyTitle>Gizlilik Politikası</PolicyTitle>
+      <Section title="Toplanan bilgiler">
+        <p>Randevu formunda ad, soyad, telefon, e-posta, hizmet tercihi, tarih, görüşme biçimi ve isteğe bağlı not işlenir. Form alanları analitik sistemine gönderilmez.</p>
+      </Section>
+      <Section title="Kullanım amaçları">
+        <p>Form verileri yalnızca randevu talebinin değerlendirilmesi, iletişim kurulması ve görüşme planlaması amaçlarıyla kullanılır. Ayrıntılı sağlık bilgisinin serbest metin alanına yazılmaması önerilir.</p>
+      </Section>
+      <Section title="Hizmet sağlayıcılar">
+        <p>Form iletimi sunucu tarafında e-posta hizmeti Resend üzerinden gerçekleştirilir. Site içerikleri ve görselleri Sanity altyapısından sunulabilir. Umami Cloud analitiği yalnızca açık analitik tercihi sonrasında çalışır ve form içeriğine erişmez.</p>
+      </Section>
+      <Section title="İletişim">
+        <p>Gizlilik talepleri <strong>pskakintemiz@gmail.com</strong> veya <strong>+90 546 853 74 69</strong> üzerinden iletilebilir.</p>
+      </Section>
+      <p className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-950">Bu metin teknik işleyişi açıklar. Veri sorumlusunun tam tebligat adresi, saklama-imha süreleri ve aktarım hukuki sebebi yayın öncesinde hukuk uzmanı tarafından tamamlanmalıdır.</p>
+    </div>
+  );
+}
+
+function KvkkNotice() {
+  return (
+    <div className="space-y-6">
+      <PolicyTitle>KVKK Aydınlatma Metni</PolicyTitle>
+      <Section title="Veri sorumlusu ve kapsam">
+        <p>6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında veri sorumlusu Klinik Psikolog Akın Temiz&apos;dir. Randevu formundaki bilgiler elektronik ortamda, doğrudan ilgili kişiden elde edilir.</p>
+      </Section>
+      <Section title="İşleme amaçları ve aktarım">
+        <p>Veriler randevu talebini yanıtlamak ve iletişim kurmak amacıyla işlenir. E-posta iletimi için Resend; içerik sunumu için Sanity kullanılmaktadır. Umami Cloud etkinleştirilirse anonimleştirilmiş kullanım sinyalleri yalnızca ayrı analitik tercihi sonrasında sağlayıcıya gönderilir.</p>
+      </Section>
+      <Section title="İlgili kişi hakları">
+        <p>KVKK&apos;nın 11. maddesi kapsamındaki bilgi alma, düzeltme, silme/yok etme ve itiraz talepleri <strong>pskakintemiz@gmail.com</strong> adresine iletilebilir.</p>
+      </Section>
+      <Section title="Hukuki inceleme gerektiren hususlar">
+        <p>Sağlık verilerinin işlenme şartı, yurt dışı aktarım mekanizması, saklama süreleri ve başvuru usulü somut hizmet sözleşmeleri ile birlikte hukuk uzmanı tarafından doğrulanmalıdır. Bu metin açık rıza yerine geçmez.</p>
+      </Section>
+    </div>
+  );
+}
+
+function CookiePolicy() {
+  return (
+    <div className="space-y-6">
+      <PolicyTitle>Çerez ve Analitik Politikası</PolicyTitle>
+      <Section title="Mevcut teknolojiler">
+        <p>Site kendi adına analitik veya reklam çerezi yerleştirmez. Analitik tercihini hatırlamak için tarayıcınızda <code>akintemiz-analytics-consent-v1</code> adlı localStorage kaydı tutulur. Bu kayıt kabul veya ret tercihinizi içerir.</p>
+      </Section>
+      <Section title="Umami Cloud analitiği">
+        <p>Onay verilirse Umami; sayfa görüntüleme, yönlendiren site, tarayıcı/donanım bilgileri, yaklaşık konum ve anonim etkileşim olaylarını ölçebilir. IP adresi standart analitik kaydında saklanmasa da konum üretimi, güvenlik ve operasyonel loglar için geçici olarak işlenebilir. URL sorguları ve hash değerleri gönderilmez.</p>
+        <p>Ölçülen özel olaylar yalnızca randevu formu başarı durumu ile telefon, WhatsApp ve Instagram tıklamalarıdır. Form değerleri, sağlık bilgisi, e-posta, telefon veya kullanıcı kimliği event verisi yapılmaz.</p>
+      </Section>
+      <Section title="Yurt dışı aktarım ve saklama">
+        <p>Umami Cloud ABD veya AB veri bölgesi sunar; CDN, güvenlik, destek ve operasyonel log süreçleri seçilen bölgenin dışında da gerçekleşebilir. Hobby planının güncel analitik saklama süresi Umami tarafından altı ay olarak açıklanmaktadır. Hesap bölgesi, sözleşme ve KVKK&apos;nın 9. maddesindeki aktarım mekanizması yayına almadan önce doğrulanmalıdır.</p>
+      </Section>
+      <Section title="Tercihinizi değiştirme">
+        <button type="button" onClick={openPrivacyPreferences} className="rounded-xl border border-brand-border bg-brand-bg px-4 py-2.5 text-sm font-medium text-brand-heading hover:border-brand-hover">
+          Analitik Tercihlerini Aç
+        </button>
+      </Section>
+    </div>
   );
 }

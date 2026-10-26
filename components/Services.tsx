@@ -25,7 +25,7 @@ export async function Services() {
   const services = await client.fetch<ServicesData>(
     SERVICES_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
 
   return (
@@ -59,18 +59,18 @@ export async function Services() {
                   {service.title}
                 </h3>
 
-                <p className="text-sm text-brand-body leading-relaxed mb-6">
+                <p className="text-sm text-brand-body leading-relaxed">
                   {service.description}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-brand-border/50 flex items-center gap-2 text-xs font-medium text-brand-heading">
-                <span className="badge-primary">
-                  {service.duration}
-                </span>
-                <span className="text-brand-muted">•</span>
-                <span className="text-brand-body">{service.frequency}</span>
-              </div>
+              {service.duration && service.duration !== "." && service.frequency && service.frequency !== "." ? (
+                <div className="mt-6 pt-4 border-t border-brand-border/50 flex items-center gap-2 text-xs font-medium text-brand-heading">
+                  <span className="badge-primary">{service.duration}</span>
+                  <span className="text-brand-muted" aria-hidden="true">•</span>
+                  <span className="text-brand-body">{service.frequency}</span>
+                </div>
+              ) : null}
             </MotionItem>
           ))}
         </div>

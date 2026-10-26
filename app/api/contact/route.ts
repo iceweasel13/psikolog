@@ -60,7 +60,7 @@ export async function POST(req: Request) {
             </tr>
             <tr>
               <td style="padding: 8px 0; font-weight: bold;">Seans Formatı:</td>
-              <td style="padding: 8px 0;">${format === "yuz-yuze" ? "Yüz yüze (Samsun)" : "Online"}</td>
+              <td style="padding: 8px 0;">${format}</td>
             </tr>
           </table>
 

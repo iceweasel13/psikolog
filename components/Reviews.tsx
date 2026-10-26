@@ -47,7 +47,7 @@ export async function Reviews() {
   const reviews = await client.fetch<ReviewsData>(
     REVIEWS_QUERY,
     {},
-    { cache: "no-store" }
+    { next: { revalidate: 300 } }
   );
 
   return (

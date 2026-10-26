@@ -26,8 +26,24 @@ export const educationType = defineType({
         "Mesleki gelişimi sürekli eğitim, sertifika programları ve klinik deneyimle sürdürmekteyim. Her düğüm, bu yolculuğun bir sinapsı.",
     }),
     defineField({
+      name: "skillsTagline",
+      title: "Yetkinlikler Üst Başlığı",
+      type: "string",
+    }),
+    defineField({
+      name: "skillsHeading",
+      title: "Yetkinlikler Başlığı",
+      type: "string",
+    }),
+    defineField({
+      name: "skillsDescription",
+      title: "Yetkinlikler Açıklaması",
+      type: "text",
+      rows: 3,
+    }),
+    defineField({
       name: "timeline",
-      title: "Zaman Çizelgesi Öğeleri",
+      title: "Eğitim ve Sertifika Kartları",
       type: "array",
       of: [
         {
@@ -59,6 +75,34 @@ export const educationType = defineType({
               validation: (Rule) => Rule.required(),
             }),
             defineField({
+              name: "year",
+              title: "Tamamlanma Yılı (İsteğe Bağlı)",
+              type: "number",
+              validation: (Rule) => Rule.integer().min(1900).max(2100),
+            }),
+            defineField({
+              name: "category",
+              title: "Kategori (İsteğe Bağlı)",
+              type: "string",
+            }),
+            defineField({
+              name: "side",
+              title: "Kart Yerleşimi (Eski Tasarım)",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Sol", value: "left" },
+                  { title: "Sağ", value: "right" },
+                ],
+              },
+              description: "Mevcut grid tasarımında kullanılmaz; eski içeriğin korunması için tutulur.",
+            }),
+            defineField({
+              name: "certificateUrl",
+              title: "Sertifika Bağlantısı (İsteğe Bağlı)",
+              type: "url",
+            }),
+            defineField({
               name: "certificateImage",
               title: "Sertifika / Belge Görseli (İsteğe Bağlı)",
               type: "image",
@@ -67,48 +111,9 @@ export const educationType = defineType({
                 hotspot: true,
               },
             }),
-            defineField({
-              name: "side",
-              title: "Masaüstü Konumu",
-              type: "string",
-              options: {
-                list: [
-                  { title: "Sol", value: "left" },
-                  { title: "Sağ", value: "right" },
-                ],
-                layout: "radio",
-              },
-              initialValue: "left",
-            }),
           ],
         },
       ],
-    }),
-    defineField({
-      name: "skillsTagline",
-      title: "Teknik Bölüm Üst Başlığı",
-      type: "string",
-      initialValue: "Teknik Yeterlilikler",
-    }),
-    defineField({
-      name: "skillsHeading",
-      title: "Teknik Bölüm Başlığı",
-      type: "string",
-      initialValue: "Araştırma & Analiz Araçları",
-    }),
-    defineField({
-      name: "skillsDescription",
-      title: "Teknik Bölüm Açıklaması",
-      type: "text",
-      rows: 2,
-      initialValue:
-        "Nicel araştırma, veri analizi ve psikolojik ölçüm süreçlerinde kullanılan araçlarda uygulama yetkinliği.",
-    }),
-    defineField({
-      name: "technicalSkills",
-      title: "Kullanılan Araçlar",
-      type: "array",
-      of: [{ type: "string" }],
     }),
   ],
 });

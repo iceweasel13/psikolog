@@ -1,14 +1,27 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MobileNav } from "@/components/Navbar/MobileNav";
 import { client } from "@/sanity/lib/client";
 import { NAVBAR_QUERY } from "@/sanity/lib/queries";
-import { PsychologyLogo } from "../icons/PsychologyLogo";
 
 export interface NavbarData {
   title?: string;
+  subtitle?: string;
   navItems?: { label: string; href: string }[];
   ctaButtonText?: string;
   ctaButtonLink?: string;
+}
+
+function splitBrand(title: string, subtitle?: string) {
+  const normalizedTitle = title.trim();
+  const role = subtitle?.trim() || "";
+  const hasRolePrefix = role && normalizedTitle.toLocaleLowerCase("tr-TR").startsWith(role.toLocaleLowerCase("tr-TR"));
+  const name = hasRolePrefix ? normalizedTitle.slice(role.length).trim() : normalizedTitle;
+
+  return {
+    role,
+    name: name || normalizedTitle,
+  };
 }
 
 /**
@@ -21,56 +34,71 @@ export default async function Navbar() {
     navbarData = await client.fetch<NavbarData>(
       NAVBAR_QUERY,
       {},
-      { cache: "no-store" }
+      { next: { revalidate: 300 } }
     );
   } catch {
     navbarData = null;
   }
 
   const brandTitle = navbarData?.title || "Psk. Akın Temiz";
+  const brand = splitBrand(brandTitle, navbarData?.subtitle);
   const navLinks = navbarData?.navItems || [];
   const ctaText = navbarData?.ctaButtonText || "Randevu Al";
   const ctaLink = navbarData?.ctaButtonLink || "#randevu";
 
   return (
     <header className="sticky top-0 z-40 bg-brand-bg/90 backdrop-blur-md border-b border-brand-border">
-      <div className="section-container h-20 flex items-center justify-between gap-4">
+      <div className="section-container flex h-20 items-center justify-between gap-3">
         <Link
           href="/"
-          className="group flex items-center gap-3 shrink-0 select-none hover:opacity-95 transition-opacity"
+          className="group flex shrink-0 items-center gap-2.5 select-none transition-opacity hover:opacity-95 sm:min-w-56 sm:gap-3 xl:min-w-60"
         >
-          <div className="flex items-center justify-center p-1.5 rounded-xl bg-brand-primary/40 border border-brand-border/60 group-hover:border-brand-hover/40 transition-colors">
-            <PsychologyLogo className="w-6 h-6 sm:w-7 sm:h-7 text-brand-hover shrink-0" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-primary/40 p-2 border border-brand-border/60 group-hover:border-brand-hover/40 transition-colors">
+            <Image
+              src="/logo.png"
+              alt=""
+              width={900}
+              height={616}
+              className="h-auto w-full"
+              priority
+            />
           </div>
 
           <span className="hidden sm:inline-block h-5 w-px bg-brand-border/80" aria-hidden="true" />
 
-          <span className="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-brand-heading tracking-tight">
-            {brandTitle}
+          <span className="leading-none">
+            {brand.role ? (
+              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-body sm:text-[11px]">
+                {brand.role}
+              </span>
+            ) : null}
+            <span className="block font-serif text-base font-bold tracking-tight text-brand-heading sm:text-lg lg:text-xl">
+              {brand.name}
+            </span>
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center md:gap-5 lg:gap-8 xl:gap-9 text-sm lg:text-[18px] font-medium text-brand-heading/90">
+        <nav className="hidden items-center gap-5 text-[13px] font-medium text-brand-heading/90 xl:flex 2xl:gap-7 2xl:text-sm">
           {navLinks?.map((link) => (
-            <Link
+            <a
               key={link.href}
               href={link.href}
               className="nav-link"
             >
               {link.label}
-            </Link>
+            </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-3 shrink-0">
-          <Link
-            href={ctaLink}
-            className="hidden md:inline-flex items-center justify-center px-5 lg:px-6 py-2.5 lg:py-3 text-sm lg:text-base font-medium rounded-xl bg-brand-primary text-brand-heading hover:bg-brand-hover hover:text-brand-bg transition-all shadow-xs active:scale-95"
+          <a
+            href={ctaLink.startsWith("#") ? ctaLink : "#randevu"}
+            className="hidden items-center justify-center rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-medium text-brand-heading shadow-xs transition-[background-color,color,transform] hover:bg-brand-hover hover:text-brand-bg active:scale-95 lg:inline-flex"
           >
             {ctaText}
-          </Link>
+          </a>
 
-          <MobileNav links={navLinks} ctaText={ctaText} ctaLink={ctaLink} />
+          <MobileNav links={navLinks} ctaText={ctaText} ctaLink={ctaLink} brandName={brand.name} brandRole={brand.role} />
         </div>
       </div>
     </header>
